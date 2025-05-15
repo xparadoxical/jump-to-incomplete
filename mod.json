@@ -1,0 +1,21 @@
+{
+	"geode": "4.4.0",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "xparadoxical.jump_to_incomplete",
+	"name": "Jump to Incomplete",
+	"version": "v1.0.0",
+	"developer": "230V",
+	"description": "Click less in the treasure room, shops, achievements",
+	"links": {
+		"source": "https://github.com/xparadoxical/jump-to-incomplete"
+	},
+	"tags": ["offline", "utility", "universal"],
+	"resources": {
+		"sprites": ["resources/jump-button.png"]
+	}
+}
