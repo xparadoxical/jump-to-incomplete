@@ -3,5 +3,5 @@
 
 namespace JumpButton
 {
-    CCMenuItemSpriteExtra* create(cocos2d::CCObject* target, cocos2d::SEL_MenuHandler callback);
+    CCMenuItemSpriteExtra* create(cocos2d::CCObject* target, cocos2d::SEL_MenuHandler callback, float scale = 1.0f);
 }
