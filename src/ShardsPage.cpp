@@ -38,6 +38,7 @@ class $modify(MyShardsPage, ShardsPage)
 
         for (int page = m_page + 1; page < m_pages->count(); page++)
         {
+            //TODO replace with two ifs using page%2
             switch (page)
             {
                 case 1:
@@ -59,9 +60,8 @@ class $modify(MyShardsPage, ShardsPage)
             continue;
 
         jump:
-            auto onSwitchPage = reinterpret_cast<void(*)(ShardsPage*,CCObject*)>(geode::base::get() + 0x474650);
             for (int i = m_page; i < page; i++)
-                onSwitchPage(this, m_nextButton);
+                onSwitchPage(m_nextButton);
             break;
         }
 
