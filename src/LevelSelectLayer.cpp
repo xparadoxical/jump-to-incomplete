@@ -4,8 +4,6 @@
 
 using namespace geode::prelude;
 
-void debugDict(CCDictionary* dict);
-
 #define MainLevelCount 22
 
 class $modify(MyLevelSelectLayer, LevelSelectLayer)

@@ -4,8 +4,6 @@
 
 using namespace geode::prelude;
 
-void debugDict(CCDictionary* dict);
-
 class $modify(MyGJShopLayer, GJShopLayer)
 {
     $override bool init(ShopType p0)
