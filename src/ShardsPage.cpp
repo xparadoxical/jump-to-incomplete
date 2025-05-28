@@ -4,7 +4,7 @@
 
 using namespace geode::prelude;
 
-enum class ShardType
+enum class ShardStat
 {
     Fire = 18,
     Ice = 19,
@@ -18,7 +18,7 @@ enum class ShardType
     Soul = 27
 };
 
-std::array g_shardTypes = {ShardType::Fire, ShardType::Ice, ShardType::Poison, ShardType::Shadow, ShardType::Lava, ShardType::Earth, ShardType::Blood, ShardType::Metal, ShardType::Light, ShardType::Soul};
+std::array g_shardTypes = {ShardStat::Fire, ShardStat::Ice, ShardStat::Poison, ShardStat::Shadow, ShardStat::Lava, ShardStat::Earth, ShardStat::Blood, ShardStat::Metal, ShardStat::Light, ShardStat::Soul};
 
 class $modify(MyShardsPage, ShardsPage)
 {
