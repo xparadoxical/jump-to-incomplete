@@ -13,12 +13,14 @@ class $modify(MyGJShopLayer, GJShopLayer)
 
         auto gsm = GameStatsManager::sharedState();
 
+        auto list = getChildByType<ListButtonBar*>(0);
         auto itemIndexes = CCArrayExt<CCInteger*>(m_shopItems->allKeys());
-        for (int i = 8; i < itemIndexes.size(); i++)
+        const int pageSize = 8;
+        for (int i = pageSize * (list->m_scrollLayer->m_page + 1); i < itemIndexes.size(); i++)
         {
             if (!gsm->isStoreItemUnlocked(itemIndexes[i]->getValue()))
             {
-                getChildByType<ListButtonBar*>(0)->goToPage(i / 8);
+                list->goToPage(i / pageSize);
                 break;
             }
         }

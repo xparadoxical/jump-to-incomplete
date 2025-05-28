@@ -48,14 +48,13 @@ class $modify(MyAchievementsLayer, AchievementsLayer)
         auto am = AchievementManager::sharedState();
 
         auto achievements = CCArrayExt<CCDictionary*>(am->m_allAchievementsSorted);
-        for (int i = 10 * (m_currentPage + 1) /*start at next page*/; i < achievements.size(); i++)
+        const int pageSize = 10;
+        for (int i = pageSize * (m_currentPage + 1); i < achievements.size(); i++)
         {
             auto achId = achievements[i]->valueForKey("identifier")->getCString();
-            auto completed = am->isAchievementEarned(achId);
-
-            if (!completed)
+            if (!am->isAchievementEarned(achId))
             {
-                auto page = i / 10;
+                auto page = i / pageSize;
                 this->loadPage(page);
                 //TODO android-only this->m_listLayer->m_listView->m_tableView->scrollToIndexPath(getAchTblVwCell->m_indexPath);
                 break;

@@ -4,8 +4,6 @@
 
 using namespace geode::prelude;
 
-#define MainLevelCount 22
-
 class $modify(MyLevelSelectLayer, LevelSelectLayer)
 {
     $override bool init(int page)
@@ -15,12 +13,13 @@ class $modify(MyLevelSelectLayer, LevelSelectLayer)
         
         auto glm = GameLevelManager::sharedState();
 
-        for (int i = m_scrollLayer->m_page + 1; i < MainLevelCount; i++)
+        const int mainLevelCount = 22;
+        for (int page = m_scrollLayer->m_page + 1; page < mainLevelCount; page++)
         {
-            auto level = glm->getMainLevel(i + 1, true);
-            if (level->m_orbCompletion.value() < 100)
+            auto level = glm->getMainLevel(page + 1, true);
+            if (level->m_orbCompletion.value() < 100/*%*/)
             {
-                m_scrollLayer->moveToPage(i);
+                m_scrollLayer->moveToPage(page);
                 break;
             }
         }
