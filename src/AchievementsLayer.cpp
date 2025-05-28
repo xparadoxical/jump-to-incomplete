@@ -9,38 +9,18 @@ class $modify(MyAchievementsLayer, AchievementsLayer)
     $override void customSetup()
     {
         AchievementsLayer::customSetup();
-        log::debug("AchievementsLayer.customSetup()");
 
-        auto jumpButton = JumpButton::create(this, menu_selector(MyAchievementsLayer::onJumpButton), 0.75f);
+        auto jumpButton = JumpButton::create(this, menu_selector(MyAchievementsLayer::onJumpButton), 0.85f);
+        //origin is at the bottom-left corner of the screen
+        //menu with buttons is scene-sized, bottom-left is at the center
 
-        auto nextPageButton = this->m_nextPageButton;
-        auto originalMenu = nextPageButton->getParent(); //scene-sized, bottom-left is at the center
-        if (originalMenu->getLayout())
-            originalMenu->addChild(jumpButton);
-        else
-        {
-            //button pos calculation
-            auto gap = 5.0f;
-            auto bottomCenterAbsolute = originalMenu->getPosition() + nextPageButton->getPosition() - CCPoint(0.0f, nextPageButton->getContentWidth() / 2 + gap/*compensation for the layout acting weird*/);
+        //button pos calculation
+        //SpriteExtras have anchor in the center
+        auto gap = 5.0f;
+        auto jumpButtonPos = CCPoint(m_nextPageButton->getPositionX() - m_nextPageButton->getContentWidth() / 2 - gap - jumpButton->getScaledContentWidth() / 2, m_nextPageButton->getPositionY());
+        jumpButton->setPosition(jumpButtonPos);
 
-            nextPageButton->removeFromParentAndCleanup(false);
-
-            auto buttons = CCMenu::create();
-            buttons->setID("next-page-menu");
-            this->m_mainLayer->addChild(buttons);
-
-            buttons->setAnchorPoint(CCPoint(0.5f, 0.0f));
-            buttons->setPosition(bottomCenterAbsolute);
-            buttons->setLayout(SimpleColumnLayout::create()
-                ->setMainAxisScaling(AxisScaling::Fit)
-                ->setCrossAxisScaling(AxisScaling::Fit)
-                ->setMainAxisAlignment(MainAxisAlignment::Start)
-                ->setMainAxisDirection(AxisDirection::BottomToTop)
-                ->setGap(gap));
-            buttons->addChild(nextPageButton);
-            buttons->addChild(jumpButton);
-            buttons->updateLayout();
-        }
+        m_nextPageButton->getParent()->addChild(jumpButton);
     }
 
     void onJumpButton(CCObject *sender)
