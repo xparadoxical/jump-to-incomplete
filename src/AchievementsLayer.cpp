@@ -17,10 +17,25 @@ class $modify(MyAchievementsLayer, AchievementsLayer)
         //button pos calculation
         //SpriteExtras have anchor in the center
         auto gap = 5.0f;
-        auto jumpButtonPos = CCPoint(m_nextPageButton->getPositionX() - m_nextPageButton->getContentWidth() / 2 - gap - jumpButton->getScaledContentWidth() / 2, m_nextPageButton->getPositionY());
-        jumpButton->setPosition(jumpButtonPos);
+        auto pos = CCPoint(m_nextPageButton->getPositionX() - m_nextPageButton->getScaledContentWidth() / 2 - gap - jumpButton->getScaledContentWidth() / 2, m_nextPageButton->getPositionY());
+        jumpButton->setPosition(pos);
 
         m_nextPageButton->getParent()->addChild(jumpButton);
+    }
+
+    $override void loadPage(int page)
+    {
+        AchievementsLayer::loadPage(page);
+
+        auto jumpButton = (CCMenuItemSpriteExtra*)m_nextPageButton->getParent()->getChildByID(JumpButton::id);
+        if (!jumpButton)
+        {
+            //we're in MyAchievementsLayer::customSetup->AchievementsLayer::customSetup->MyAchievementsLayer::loadPage
+            //jumpButton doesn't exist yet, it will be visible by default
+            return;
+        }
+
+        jumpButton->setVisible(m_nextPageButton->isVisible());
     }
 
     void onJumpButton(CCObject *sender)
