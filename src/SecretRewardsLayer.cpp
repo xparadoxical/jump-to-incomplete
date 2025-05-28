@@ -28,7 +28,7 @@ class $modify(MySecretRewardsLayer, SecretRewardsLayer)
                 auto id = chestSprite->getTag();
                 if (!GameStatsManager::sharedState()->isSecretChestUnlocked(id))
                 {
-                    m_secondaryScrollLayer->moveToPage(page);
+                    m_secondaryScrollLayer->instantMoveToPage(page);
                     return;
                 }
             }

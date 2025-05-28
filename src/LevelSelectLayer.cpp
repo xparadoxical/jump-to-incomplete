@@ -19,7 +19,7 @@ class $modify(MyLevelSelectLayer, LevelSelectLayer)
             auto level = glm->getMainLevel(page + 1, true);
             if (level->m_orbCompletion.value() < 100/*%*/)
             {
-                m_scrollLayer->moveToPage(page);
+                m_scrollLayer->instantMoveToPage(page);
                 break;
             }
         }
