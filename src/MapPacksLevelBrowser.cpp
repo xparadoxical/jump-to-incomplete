@@ -4,7 +4,7 @@
 
 using namespace geode::prelude;
 
-class $modify(MyLevelBrowserLayer, LevelBrowserLayer)
+class $modify(JtiLevelBrowserLayer, LevelBrowserLayer)
 {
     struct Fields
     {
@@ -24,7 +24,7 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer)
         if (!isMapPacks())
             return true;
 
-        auto jumpButton = JumpButton::create(this, menu_selector(MyLevelBrowserLayer::onJumpButton), 0.85f);
+        auto jumpButton = JumpButton::create(this, menu_selector(JtiLevelBrowserLayer::onJumpButton), 0.85f);
         m_fields->jumpButton = jumpButton;
 
         auto nextPageMenu = getChildByID("next-page-menu");

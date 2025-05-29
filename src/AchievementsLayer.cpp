@@ -4,13 +4,13 @@
 
 using namespace geode::prelude;
 
-class $modify(MyAchievementsLayer, AchievementsLayer)
+class $modify(JtiAchievementsLayer, AchievementsLayer)
 {
     $override void customSetup()
     {
         AchievementsLayer::customSetup();
 
-        auto jumpButton = JumpButton::create(this, menu_selector(MyAchievementsLayer::onJumpButton), 0.85f);
+        auto jumpButton = JumpButton::create(this, menu_selector(JtiAchievementsLayer::onJumpButton), 0.85f);
         //origin is at the bottom-left corner of the screen
         //menu with buttons is scene-sized, bottom-left is at the center
 
@@ -30,7 +30,7 @@ class $modify(MyAchievementsLayer, AchievementsLayer)
         auto jumpButton = (CCMenuItemSpriteExtra*)m_nextPageButton->getParent()->getChildByID(JumpButton::id);
         if (!jumpButton)
         {
-            //we're in MyAchievementsLayer::customSetup->AchievementsLayer::customSetup->MyAchievementsLayer::loadPage
+            //we're in JtiAchievementsLayer::customSetup->AchievementsLayer::customSetup->JtiAchievementsLayer::loadPage
             //jumpButton doesn't exist yet, it will be visible by default
             return;
         }

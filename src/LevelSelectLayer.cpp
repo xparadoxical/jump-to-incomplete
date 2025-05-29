@@ -4,14 +4,14 @@
 
 using namespace geode::prelude;
 
-class $modify(MyLevelSelectLayer, LevelSelectLayer)
+class $modify(JtiLevelSelectLayer, LevelSelectLayer)
 {
     $override bool init(int page)
     {
         if (!LevelSelectLayer::init(page))
             return false;
         
-        auto jumpButton = JumpButton::create(this, menu_selector(MyLevelSelectLayer::onJumpButton));
+        auto jumpButton = JumpButton::create(this, menu_selector(JtiLevelSelectLayer::onJumpButton));
         auto arrowsMenu = getChildByID("arrows-menu");
 
         auto gap = 5.0f;

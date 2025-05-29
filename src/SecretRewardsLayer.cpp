@@ -4,13 +4,13 @@
 
 using namespace geode::prelude;
 
-class $modify(MySecretRewardsLayer, SecretRewardsLayer)
+class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
 {
     $override void onChestType(CCObject* sender)
     {
         SecretRewardsLayer::onChestType(sender);
 
-        auto jumpButton = JumpButton::create(this, menu_selector(MySecretRewardsLayer::onJumpButton), 0.85f);
+        auto jumpButton = JumpButton::create(this, menu_selector(JtiSecretRewardsLayer::onJumpButton), 0.85f);
         auto gap = 5.0f;
         auto pos = CCPoint(m_rightButton->getPositionX() - m_rightButton->getScaledContentWidth() / 2 - gap - jumpButton->getScaledContentWidth() / 2, m_rightButton->getPositionY());
         auto worldPos = m_rightButton->getParent()->convertToWorldSpace(pos);

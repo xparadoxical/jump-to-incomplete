@@ -4,7 +4,7 @@
 
 using namespace geode::prelude;
 
-class $modify(MyGJShopLayer, GJShopLayer)
+class $modify(JtiGJShopLayer, GJShopLayer)
 {
     struct Fields
     {
@@ -16,7 +16,7 @@ class $modify(MyGJShopLayer, GJShopLayer)
         if (!GJShopLayer::init(p0))
             return false;
 
-        auto jumpButton = JumpButton::create(this, menu_selector(MyGJShopLayer::onJumpButton), 0.75f);
+        auto jumpButton = JumpButton::create(this, menu_selector(JtiGJShopLayer::onJumpButton), 0.75f);
 
         auto navigationMenu = getChildByType<ListButtonBar>(0)->getChildByType<CCMenu>(0);
         auto rightButton = m_fields->rightButton = getRightButton(navigationMenu);

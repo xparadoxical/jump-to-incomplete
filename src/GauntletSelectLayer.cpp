@@ -4,7 +4,7 @@
 
 using namespace geode::prelude;
 
-class $modify(MyGauntletSelectLayer, GauntletSelectLayer)
+class $modify(JtiGauntletSelectLayer, GauntletSelectLayer)
 {
     struct Fields
     {
@@ -37,7 +37,7 @@ class $modify(MyGauntletSelectLayer, GauntletSelectLayer)
 
     void setupJumpButton()
     {
-        auto jumpButton = JumpButton::create(this, menu_selector(MyGauntletSelectLayer::onJumpButton));
+        auto jumpButton = JumpButton::create(this, menu_selector(JtiGauntletSelectLayer::onJumpButton));
 
         auto scrollButtonsMenu = getChildByID("scroll-buttons-menu");
         auto rightButton = scrollButtonsMenu->getChildByID("right-button");
