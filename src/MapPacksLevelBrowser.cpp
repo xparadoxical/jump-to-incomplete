@@ -12,11 +12,16 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer)
         bool searching;
     };
 
+    bool isMapPacks()
+    {
+        return m_searchObject->m_searchType == SearchType::MapPack;
+    }
+
     $override bool init(GJSearchObject* p0) {
         if (!LevelBrowserLayer::init(p0))
             return false;
 
-        if (m_searchObject->m_searchType != SearchType::MapPack)
+        if (!isMapPacks())
             return true;
 
         auto jumpButton = JumpButton::create(this, menu_selector(MyLevelBrowserLayer::onJumpButton), 0.85f);
@@ -62,12 +67,16 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer)
         //m_fields->foundAndScrolled = false;
         LevelBrowserLayer::loadPage(p0);
 
-        updateVisibility();
+        if (isMapPacks())
+            updateVisibility();
     }
 
     $override void loadLevelsFinished(CCArray* entries, char const* key, int p2)
     {
         LevelBrowserLayer::loadLevelsFinished(entries, key, p2);
+
+        if (!isMapPacks())
+            return;
 
         updateVisibility();
 
@@ -85,7 +94,6 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer)
 
     void onJumpButton(CCObject *sender)
     {
-        //TODO
         //if (!m_fields->foundAndScrolled)
         //    searchCurrentPage();
         //then return if not searching
