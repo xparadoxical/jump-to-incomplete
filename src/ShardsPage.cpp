@@ -20,7 +20,8 @@ enum class ShardStat
 
 std::array g_shardTypes = {ShardStat::Fire, ShardStat::Ice, ShardStat::Poison, ShardStat::Shadow, ShardStat::Lava, ShardStat::Earth, ShardStat::Blood, ShardStat::Metal, ShardStat::Light, ShardStat::Soul};
 
-class $modify(MyShardsPage, ShardsPage)
+//not adding a button since it's just a few fully visible pages
+class $modify(ShardsPage)
 {
     struct Fields
     {
@@ -31,30 +32,27 @@ class $modify(MyShardsPage, ShardsPage)
     {
         if (!ShardsPage::init())
             return false;
-        
+
         auto gsm = GameStatsManager::sharedState();
+        const auto maxShards = 100;
+
         for (int i = 0; i < g_shardTypes.size(); i++)
             m_fields->shards[i] = gsm->getStat(fmt::to_string((int)g_shardTypes[i]).c_str());
 
         for (int page = m_page + 1; page < m_pages->count(); page++)
         {
-            //TODO replace with two ifs using page%2
-            switch (page)
+            auto groupOffset = page / 2 * 5;
+
+            if (page % 2 == 0)
             {
-                case 1:
-                    if (*std::ranges::min_element(m_fields->shards.begin(), m_fields->shards.begin() + 5) < 100)
-                        goto jump;
-                    break;
-                case 2:
-                    if (std::min({m_fields->shards[5], m_fields->shards[6], m_fields->shards[7]}) < 100)
-                        goto jump;
-                    break;
-                case 3:
-                    if (*std::ranges::min_element(m_fields->shards.begin() + 5, m_fields->shards.begin() + 10) < 100)
-                        goto jump;
-                    break;
-                default:
-                    log::warn("unhandled ShardsPage page {}", page);
+                if (std::min({m_fields->shards[groupOffset], m_fields->shards[groupOffset + 1], m_fields->shards[groupOffset + 2]}) < maxShards)
+                    goto jump;
+            }
+            else
+            {
+                //check the bonus reward
+                if (*std::ranges::min_element(m_fields->shards.begin() + groupOffset, m_fields->shards.begin() + groupOffset + 5) < maxShards)
+                    goto jump;
             }
 
             continue;
