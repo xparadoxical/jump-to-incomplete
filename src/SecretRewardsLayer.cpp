@@ -9,22 +9,6 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
     struct Fields
     {
         GJRewardType chestType;
-
-        int getChestCount()
-        {
-            switch (chestType)
-            {
-                case GJRewardType::SmallTreasure: return 400;
-                case GJRewardType::LargeTreasure: return 100;
-                case GJRewardType::Key10Treasure: return 60;
-                case GJRewardType::Key25Treasure: return 24;
-                case GJRewardType::Key50Treasure: return 12;
-                case GJRewardType::Key100Treasure: return 8;
-                default:
-                    log::warn("unhandled chest type {}", (int)chestType);
-                    return 0;
-            }
-        }
     };
 
     $override void createSecondaryLayer(int chestType)
@@ -55,8 +39,7 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
 
         auto startingPage = m_secondaryScrollLayer->m_page;
         auto pageCount = m_secondaryScrollLayer->getTotalPages();
-        auto totalItems = m_fields->getChestCount();
-        log::debug("pageCount {}, items {}", pageCount, totalItems);
+        log::debug("pageCount {}", pageCount);
 
         const auto pageSize = 4 * 3;
         for (int i = 0; i < pageCount; i++) //check the next pageCount pages
