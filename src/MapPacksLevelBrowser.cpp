@@ -92,7 +92,7 @@ class $modify(JtiLevelBrowserLayer, LevelBrowserLayer)
         m_fields->searching = false;
     }
 
-    void onJumpButton(CCObject *sender)
+    void onJumpButton(CCObject* sender)
     {
         //if (!m_fields->foundAndScrolled)
         //    searchCurrentPage();

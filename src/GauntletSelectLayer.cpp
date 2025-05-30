@@ -50,7 +50,7 @@ class $modify(JtiGauntletSelectLayer, GauntletSelectLayer)
         m_fields->waitForLoad = false;
     }
 
-    void onJumpButton(CCObject *sender)
+    void onJumpButton(CCObject* sender)
     {
         auto glm = GameLevelManager::sharedState();
 

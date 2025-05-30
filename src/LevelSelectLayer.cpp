@@ -24,7 +24,7 @@ class $modify(JtiLevelSelectLayer, LevelSelectLayer)
         return true;
     }
 
-    void onJumpButton(CCObject *sender)
+    void onJumpButton(CCObject* sender)
     {
         auto glm = GameLevelManager::sharedState();
 

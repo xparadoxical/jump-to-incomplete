@@ -31,7 +31,7 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
         m_secondaryLayer->addChild(jumpButtonMenu);
     }
 
-    void onJumpButton(CCObject *sender)
+    void onJumpButton(CCObject* sender)
     {
         //not gonna decipher what SecretRewardsLayer::generateChestItems does
         auto chestsLayer = m_secondaryScrollLayer->m_extendedLayer;

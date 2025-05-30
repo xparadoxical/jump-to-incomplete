@@ -38,7 +38,7 @@ class $modify(JtiAchievementsLayer, AchievementsLayer)
         jumpButton->setVisible(m_nextPageButton->isVisible());
     }
 
-    void onJumpButton(CCObject *sender)
+    void onJumpButton(CCObject* sender)
     {
         auto am = AchievementManager::sharedState();
 

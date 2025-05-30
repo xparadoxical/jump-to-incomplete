@@ -44,7 +44,7 @@ class $modify(JtiGJShopLayer, GJShopLayer)
         return nullptr;
     }
 
-    void onJumpButton(CCObject *sender)
+    void onJumpButton(CCObject* sender)
     {
         auto gsm = GameStatsManager::sharedState();
         auto list = getChildByType<ListButtonBar*>(0);
