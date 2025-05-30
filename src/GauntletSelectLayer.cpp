@@ -55,16 +55,34 @@ class $modify(JtiGauntletSelectLayer, GauntletSelectLayer)
         auto glm = GameLevelManager::sharedState();
 
         auto gauntletIds = glm->m_savedGauntlets->allKeys();
+        auto startingPage = m_scrollLayer->m_page;
+        auto pageCount = m_scrollLayer->getTotalPages();
+        auto totalItems = glm->m_savedGauntlets->count();
+        log::debug("pageCount {}, items {}", pageCount, totalItems);
+
         const int pageSize = 3;
-        for (int i = pageSize * (m_scrollLayer->m_page + 1); i < gauntletIds->count(); i++)
+        for (int i = 0; i < pageCount; i++) //check the next pageCount pages
         {
-            auto id = gauntletIds->stringAtIndex(i);
-            auto gauntlet = (GJMapPack*)glm->m_savedGauntlets->objectForKey(id->getCString());
-            if (!gauntlet->hasCompletedMapPack())
+            auto pageIndex = (startingPage + 1/*start at next page*/ + i) % pageCount;
+            auto pageItemCount = std::min(pageSize, (int)totalItems - (int)pageIndex * pageSize);
+            log::debug("checking page {} with {} items", pageIndex, pageItemCount);
+
+            for (int j = 0; j < pageItemCount; j++) //check all items on the page
             {
-                m_scrollLayer->moveToPage(i / pageSize);
-                break;
+                auto itemIndex = pageIndex * pageSize + j;
+
+                auto id = gauntletIds->stringAtIndex(itemIndex);
+                auto gauntlet = (GJMapPack*)glm->m_savedGauntlets->objectForKey(id->getCString());
+                if (!gauntlet->hasCompletedMapPack())
+                {
+                    log::debug("jumping to page {}", pageIndex);
+                    m_scrollLayer->moveToPage(pageIndex);
+                    return;
+                }
             }
         }
+
+        log::debug("no item found");
+        ((CCNode*)sender)->setVisible(false);
     }
 };

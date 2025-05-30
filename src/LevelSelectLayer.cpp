@@ -28,15 +28,30 @@ class $modify(JtiLevelSelectLayer, LevelSelectLayer)
     {
         auto glm = GameLevelManager::sharedState();
 
+        auto startingPage = m_scrollLayer->m_page;
+        auto pageCount = m_scrollLayer->getTotalPages();
+        log::debug("pageCount {}", pageCount);
+
         const int mainLevelCount = 22; //TODO get from some manager?
-        for (int page = m_scrollLayer->m_page + 1; page < mainLevelCount; page++) //TODO wrap-around
+        //TODO levelIndex 0 is checked 3 times - for pages 22,23,0
+        for (int i = 0; i < pageCount; i++) //check the next pageCount pages
         {
-            auto level = glm->getMainLevel(page + 1, true);
+            auto boundedPage = (startingPage + i) % pageCount;
+            auto boundedLevelPage = std::min(mainLevelCount - 1, boundedPage); //ignore last non-level pages
+            auto nextLevelPage = (boundedLevelPage + 1) % mainLevelCount;
+
+            log::debug("page {}, level page {}, next level {}", boundedPage, boundedLevelPage, nextLevelPage);
+
+            auto level = glm->getMainLevel(nextLevelPage + 1, true);
             if (level->m_orbCompletion.value() < 100/*%*/)
             {
-                m_scrollLayer->instantMoveToPage(page);
-                break;
+                log::debug("jumping to page {}", nextLevelPage);
+                m_scrollLayer->instantMoveToPage(nextLevelPage);
+                return;
             }
         }
+
+        log::debug("no item found");
+        ((CCNode*)sender)->setVisible(false);
     }
 };

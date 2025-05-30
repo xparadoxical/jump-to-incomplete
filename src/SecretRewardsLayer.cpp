@@ -6,9 +6,32 @@ using namespace geode::prelude;
 
 class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
 {
-    $override void onChestType(CCObject* sender)
+    struct Fields
     {
-        SecretRewardsLayer::onChestType(sender);
+        GJRewardType chestType;
+
+        int getChestCount()
+        {
+            switch (chestType)
+            {
+                case GJRewardType::SmallTreasure: return 400;
+                case GJRewardType::LargeTreasure: return 100;
+                case GJRewardType::Key10Treasure: return 60;
+                case GJRewardType::Key25Treasure: return 24;
+                case GJRewardType::Key50Treasure: return 12;
+                case GJRewardType::Key100Treasure: return 8;
+                default:
+                    log::warn("unhandled chest type {}", (int)chestType);
+                    return 0;
+            }
+        }
+    };
+
+    $override void createSecondaryLayer(int chestType)
+    {
+        SecretRewardsLayer::createSecondaryLayer(chestType);
+
+        m_fields->chestType = (GJRewardType)chestType;
 
         auto jumpButton = JumpButton::create(this, menu_selector(JtiSecretRewardsLayer::onJumpButton), 0.85f);
         auto gap = 5.0f;
@@ -27,17 +50,41 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
         //not gonna decipher what SecretRewardsLayer::generateChestItems does
         auto chestsLayer = m_secondaryScrollLayer->m_extendedLayer;
         auto pageLayers = CCArrayExt<CCLayer*>(chestsLayer->getChildren());
-        for (int page = m_secondaryScrollLayer->m_page + 1; page < pageLayers.size(); page++)
+
+        auto startingPage = m_secondaryScrollLayer->m_page;
+        auto pageCount = m_secondaryScrollLayer->getTotalPages();
+        auto totalItems = m_fields->getChestCount();
+        log::debug("pageCount {}, items {}", pageCount, totalItems);
+
+        const auto pageSize = 4 * 3;
+        for (int i = 0; i < pageCount; i++) //check the next pageCount pages
         {
-            for (auto chestSprite : CCArrayExt<CCMenuItemSpriteExtra*>(pageLayers[page]->getChildByType<CCMenu*>(0)->getChildren()))
+            auto pageIndex = (startingPage + 1/*start at next page*/ + i) % pageCount;
+            auto chestButtons = CCArrayExt<CCMenuItemSpriteExtra*>(pageLayers[pageIndex]->getChildByType<CCMenu*>(0)->getChildren());
+            auto pageItemCount = chestButtons.size();
+            log::debug("checking page {} with {} items", pageIndex, pageItemCount);
+
+            for (int itemIndex = 0; itemIndex < pageItemCount; itemIndex++) //check all items on the page
             {
-                auto id = chestSprite->getTag();
+                auto id = chestButtons[itemIndex]->getTag();
                 if (!GameStatsManager::sharedState()->isSecretChestUnlocked(id))
                 {
-                    m_secondaryScrollLayer->instantMoveToPage(page);
+                    if (m_fields->chestType < GJRewardType::Key25Treasure) //25, 50 and 100 key chests don't have wrap-around
+                    {
+                        //(instant)moveToPage sometimes results in empty pages
+                        log::debug("jumping {} pages forward", i + 1);
+                        for (int k = 0; k < i + 1; k++)
+                            onSwitchPage(m_rightButton);
+                    }
+                    else
+                        m_secondaryScrollLayer->moveToPage(pageIndex);
+
                     return;
                 }
             }
         }
+
+        log::debug("no item found");
+        ((CCNode*)sender)->setVisible(false);
     }
 };

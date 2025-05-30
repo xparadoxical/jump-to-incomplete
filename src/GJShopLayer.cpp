@@ -47,20 +47,36 @@ class $modify(JtiGJShopLayer, GJShopLayer)
     void onJumpButton(CCObject *sender)
     {
         auto gsm = GameStatsManager::sharedState();
-
         auto list = getChildByType<ListButtonBar*>(0);
-        auto itemIndexes = CCArrayExt<CCInteger*>(m_shopItems->allKeys());
+
+        auto shopItemIndexes = CCArrayExt<CCInteger*>(m_shopItems->allKeys());
+        auto startingPage = list->m_scrollLayer->m_page;
+        auto pageCount = list->m_scrollLayer->getTotalPages();
+        auto totalItems = shopItemIndexes.size();
+        log::debug("pageCount {}, items {}", pageCount, totalItems);
+
         const int pageSize = 8;
-        for (int i = pageSize * (list->m_scrollLayer->m_page + 1); i < itemIndexes.size(); i++)
+        for (int i = 0; i < pageCount; i++) //check the next pageCount pages
         {
-            if (!gsm->isStoreItemUnlocked(itemIndexes[i]->getValue()))
+            auto pageIndex = (startingPage + 1/*start at next page*/ + i) % pageCount;
+            auto pageItemCount = std::min((size_t)pageSize, totalItems - pageIndex * pageSize);
+            log::debug("checking page {} with {} items", pageIndex, pageItemCount);
+
+            for (int j = 0; j < pageItemCount; j++) //check all items on the page
             {
-                //(instant)moveToPage sometimes results in empty pages
-                auto targetPage = i / pageSize;
-                for (int currentPage = list->m_scrollLayer->m_page; currentPage < targetPage; currentPage++)
-                    list->onRight(m_fields->rightButton);
-                break;
+                auto itemIndex = pageIndex * pageSize + j;
+                if (!gsm->isStoreItemUnlocked(shopItemIndexes[itemIndex]->getValue()))
+                {
+                    //(instant)moveToPage sometimes results in empty pages
+                    log::debug("jumping {} pages forward", i + 1);
+                    for (int k = 0; k < i + 1; k++)
+                        list->onRight(m_fields->rightButton);
+                    return;
+                }
             }
         }
+
+        log::debug("no item found");
+        ((CCNode*)sender)->setVisible(false);
     }
 };
