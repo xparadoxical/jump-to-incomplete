@@ -35,13 +35,15 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
 
         auto jumpButton = JumpButton::create(this, menu_selector(JtiSecretRewardsLayer::onJumpButton), 0.85f);
         auto gap = 5.0f;
-        auto pos = CCPoint(m_rightButton->getPositionX() - m_rightButton->getScaledContentWidth() / 2 - gap - jumpButton->getScaledContentWidth() / 2, m_rightButton->getPositionY());
+        //have to account for fSizeMult here because jumpButton will be below rightButton
+        auto pos = CCPoint(m_rightButton->getPositionX(), m_rightButton->getPositionY() + m_rightButton->getScaledContentHeight() / 2 * m_rightButton->m_fSizeMult + gap + jumpButton->getScaledContentHeight() / 2);
         auto worldPos = m_rightButton->getParent()->convertToWorldSpace(pos);
         jumpButton->setPosition(worldPos);
 
         auto jumpButtonMenu = CCMenu::createWithItem(jumpButton);
         jumpButtonMenu->setID(JumpButton::id + "-menu");
         jumpButtonMenu->setPosition({0, 0});
+
         m_secondaryLayer->addChild(jumpButtonMenu);
     }
 
