@@ -58,8 +58,8 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
                         for (int k = 0; k < i + 1; k++)
                             m_secondaryScrollLayer->instantMoveToPage(m_secondaryScrollLayer->m_page + 1);
                     }
-                    else
-                        m_secondaryScrollLayer->moveToPage(pageIndex);
+                    else //25-key chests
+                        m_secondaryScrollLayer->instantMoveToPage(pageIndex);
 
                     return;
                 }
