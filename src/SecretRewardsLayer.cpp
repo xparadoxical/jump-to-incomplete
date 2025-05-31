@@ -11,7 +11,7 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
     {
         SecretRewardsLayer::createSecondaryLayer(chestType);
 
-        if (m_secondaryScrollLayer->m_extendedLayer->getChildren()->count() == 1)
+        if (m_secondaryScrollLayer->getTotalPages() == 1)
             return;
 
         auto jumpButton = JumpButton::create(this, menu_selector(JtiSecretRewardsLayer::onJumpButton), 0.85f);
