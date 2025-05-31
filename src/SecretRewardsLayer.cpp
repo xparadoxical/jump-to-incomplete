@@ -7,19 +7,12 @@ using namespace geode::prelude;
 
 class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
 {
-    struct Fields
-    {
-        GJRewardType chestType;
-    };
-
     $override void createSecondaryLayer(int chestType)
     {
         SecretRewardsLayer::createSecondaryLayer(chestType);
 
         if (m_secondaryScrollLayer->m_extendedLayer->getChildren()->count() == 1)
             return;
-
-        m_fields->chestType = (GJRewardType)chestType;
 
         auto jumpButton = JumpButton::create(this, menu_selector(JtiSecretRewardsLayer::onJumpButton), 0.85f);
         auto gap = 5.0f;
@@ -58,7 +51,7 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
                 auto id = chestButtons[itemIndex]->getTag();
                 if (!GameStatsManager::sharedState()->isSecretChestUnlocked(id))
                 {
-                    if (m_fields->chestType < GJRewardType::Key25Treasure) //25, 50 and 100 key chests don't have wrap-around
+                    if (m_secondaryScrollLayer->m_looped)
                     {
                         //BoomScrollLayer::respositionPagesLooped doesn't support >1-page jumps
                         log::debug("jumping {} pages forward", i + 1);
