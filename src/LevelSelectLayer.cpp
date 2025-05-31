@@ -1,6 +1,7 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LevelSelectLayer.hpp>
 #include "JumpButton.h"
+#include "utils.h"
 
 using namespace geode::prelude;
 
@@ -28,8 +29,8 @@ class $modify(JtiLevelSelectLayer, LevelSelectLayer)
     {
         auto glm = GameLevelManager::sharedState();
 
-        auto startingPage = m_scrollLayer->m_page;
         auto pageCount = m_scrollLayer->getTotalPages();
+        auto startingPage = jti::utils::floorMod(m_scrollLayer->m_page, pageCount);
         log::debug("pageCount {}", pageCount);
 
         const int mainLevelCount = 22; //TODO get from some manager?

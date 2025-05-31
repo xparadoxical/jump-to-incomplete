@@ -1,6 +1,7 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/GJShopLayer.hpp>
 #include "JumpButton.h"
+#include "utils.h"
 
 using namespace geode::prelude;
 
@@ -50,8 +51,8 @@ class $modify(JtiGJShopLayer, GJShopLayer)
         auto list = getChildByType<ListButtonBar*>(0);
 
         auto shopItemIndexes = CCArrayExt<CCInteger*>(m_shopItems->allKeys());
-        auto startingPage = list->m_scrollLayer->m_page;
         auto pageCount = list->m_scrollLayer->getTotalPages();
+        auto startingPage = jti::utils::floorMod(list->m_scrollLayer->m_page, pageCount);
         auto totalItems = shopItemIndexes.size();
         log::debug("pageCount {}, items {}", pageCount, totalItems);
 

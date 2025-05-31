@@ -1,6 +1,7 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/SecretRewardsLayer.hpp>
 #include "JumpButton.h"
+#include "utils.h"
 
 using namespace geode::prelude;
 
@@ -40,8 +41,8 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
         auto chestsLayer = m_secondaryScrollLayer->m_extendedLayer;
         auto pageLayers = CCArrayExt<CCLayer*>(chestsLayer->getChildren());
 
-        auto startingPage = m_secondaryScrollLayer->m_page;
         auto pageCount = m_secondaryScrollLayer->getTotalPages();
+        auto startingPage = jti::utils::floorMod(m_secondaryScrollLayer->m_page, pageCount);
         log::debug("pageCount {}", pageCount);
 
         const auto pageSize = 4 * 3;

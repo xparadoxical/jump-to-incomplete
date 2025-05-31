@@ -1,6 +1,7 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/GauntletSelectLayer.hpp>
 #include "JumpButton.h"
+#include "utils.h"
 
 using namespace geode::prelude;
 
@@ -55,8 +56,8 @@ class $modify(JtiGauntletSelectLayer, GauntletSelectLayer)
         auto glm = GameLevelManager::sharedState();
 
         auto gauntletIds = glm->m_savedGauntlets->allKeys();
-        auto startingPage = m_scrollLayer->m_page;
         auto pageCount = m_scrollLayer->getTotalPages();
+        auto startingPage = jti::utils::floorMod(m_scrollLayer->m_page, pageCount);
         auto totalItems = glm->m_savedGauntlets->count();
         log::debug("pageCount {}, items {}", pageCount, totalItems);
 
