@@ -60,10 +60,10 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
                 {
                     if (m_fields->chestType < GJRewardType::Key25Treasure) //25, 50 and 100 key chests don't have wrap-around
                     {
-                        //(instant)moveToPage sometimes results in empty pages
+                        //BoomScrollLayer::respositionPagesLooped doesn't support >1-page jumps
                         log::debug("jumping {} pages forward", i + 1);
                         for (int k = 0; k < i + 1; k++)
-                            onSwitchPage(m_rightButton);
+                            m_secondaryScrollLayer->instantMoveToPage(m_secondaryScrollLayer->m_page + 1);
                     }
                     else
                         m_secondaryScrollLayer->moveToPage(pageIndex);

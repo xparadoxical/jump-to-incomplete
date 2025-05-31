@@ -7,11 +7,6 @@ using namespace geode::prelude;
 
 class $modify(JtiGJShopLayer, GJShopLayer)
 {
-    struct Fields
-    {
-        CCMenuItemSpriteExtra* rightButton;
-    };
-
     $override bool init(ShopType p0)
     {
         if (!GJShopLayer::init(p0))
@@ -20,7 +15,7 @@ class $modify(JtiGJShopLayer, GJShopLayer)
         auto jumpButton = JumpButton::create(this, menu_selector(JtiGJShopLayer::onJumpButton), 0.75f);
 
         auto navigationMenu = getChildByType<ListButtonBar>(0)->getChildByType<CCMenu>(0);
-        auto rightButton = m_fields->rightButton = getRightButton(navigationMenu);
+        auto rightButton = getRightButton(navigationMenu);
 
         auto gap = 5.0f;
         auto pos = CCPoint(rightButton->getPositionX(), rightButton->getPositionY() + rightButton->getScaledContentHeight() / 2 + gap + jumpButton->getScaledContentHeight() / 2);
@@ -68,10 +63,10 @@ class $modify(JtiGJShopLayer, GJShopLayer)
                 auto itemIndex = pageIndex * pageSize + j;
                 if (!gsm->isStoreItemUnlocked(shopItemIndexes[itemIndex]->getValue()))
                 {
-                    //(instant)moveToPage sometimes results in empty pages
+                    //BoomScrollLayer::respositionPagesLooped doesn't support >1-page jumps
                     log::debug("jumping {} pages forward", i + 1);
                     for (int k = 0; k < i + 1; k++)
-                        list->onRight(m_fields->rightButton);
+                        list->m_scrollLayer->moveToPage(list->m_scrollLayer->m_page + 1);
                     return;
                 }
             }

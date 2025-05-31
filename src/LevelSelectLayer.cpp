@@ -46,8 +46,10 @@ class $modify(JtiLevelSelectLayer, LevelSelectLayer)
             auto level = glm->getMainLevel(nextLevelPage + 1, true);
             if (level->m_orbCompletion.value() < 100/*%*/)
             {
-                log::debug("jumping to page {}", nextLevelPage);
-                m_scrollLayer->instantMoveToPage(nextLevelPage);
+                //BoomScrollLayer::respositionPagesLooped doesn't support >1-page jumps
+                log::debug("jumping {} pages forward", i + 1);
+                for (int k = 0; k < i + 1; k++)
+                    m_scrollLayer->instantMoveToPage(m_scrollLayer->m_page + 1);
                 return;
             }
         }

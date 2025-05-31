@@ -76,8 +76,10 @@ class $modify(JtiGauntletSelectLayer, GauntletSelectLayer)
                 auto gauntlet = (GJMapPack*)glm->m_savedGauntlets->objectForKey(id->getCString());
                 if (!gauntlet->hasCompletedMapPack())
                 {
-                    log::debug("jumping to page {}", pageIndex);
-                    m_scrollLayer->moveToPage(pageIndex);
+                    //BoomScrollLayer::respositionPagesLooped doesn't support >1-page jumps
+                    log::debug("jumping {} pages forward", i + 1);
+                    for (int k = 0; k < i + 1; k++)
+                        m_scrollLayer->moveToPage(m_scrollLayer->m_page + 1);
                     return;
                 }
             }
