@@ -2,6 +2,7 @@
 #include <Geode/modify/LevelSelectLayer.hpp>
 #include "JumpButton.h"
 #include "utils.h"
+#include "scroll.h"
 
 using namespace geode::prelude;
 
@@ -46,10 +47,7 @@ class $modify(JtiLevelSelectLayer, LevelSelectLayer)
             auto level = glm->getMainLevel(nextLevelPage + 1, true);
             if (level->m_orbCompletion.value() < 100/*%*/)
             {
-                //BoomScrollLayer::respositionPagesLooped doesn't support >1-page jumps
-                log::debug("jumping {} pages forward", i + 1);
-                for (int k = 0; k < i + 1; k++)
-                    m_scrollLayer->instantMoveToPage(m_scrollLayer->m_page + 1);
+                jti::scroll::instantJumpForward(m_scrollLayer, i + 1);
                 return;
             }
         }
