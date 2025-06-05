@@ -2,6 +2,7 @@
 #include <Geode/modify/GauntletSelectLayer.hpp>
 #include "JumpButton.h"
 #include "utils.h"
+#include "scroll.h"
 
 using namespace geode::prelude;
 
@@ -55,37 +56,16 @@ class $modify(JtiGauntletSelectLayer, GauntletSelectLayer)
     {
         auto glm = GameLevelManager::sharedState();
 
-        auto gauntletIds = glm->m_savedGauntlets->allKeys();
-        auto pageCount = m_scrollLayer->getTotalPages();
-        auto startingPage = jti::utils::floorMod(m_scrollLayer->m_page, pageCount);
-        auto totalItems = glm->m_savedGauntlets->count();
-        log::debug("pageCount {}, items {}", pageCount, totalItems);
-
         const int pageSize = 3;
-        for (int i = 0; i < pageCount; i++) //check the next pageCount pages
-        {
-            auto pageIndex = (startingPage + 1/*start at next page*/ + i) % pageCount;
-            auto pageItemCount = std::min(pageSize, (int)totalItems - (int)pageIndex * pageSize);
-            log::debug("checking page {} with {} items", pageIndex, pageItemCount);
+        auto totalItems = glm->m_savedGauntlets->count();
+        auto gauntletIds = glm->m_savedGauntlets->allKeys();
 
-            for (int j = 0; j < pageItemCount; j++) //check all items on the page
-            {
-                auto itemIndex = pageIndex * pageSize + j;
-
+        jti::scroll::toIncompletePage(m_scrollLayer, pageSize, totalItems,
+            [gauntletIds, glm](int pageIndex, int itemIndex) -> bool {
                 auto id = gauntletIds->stringAtIndex(itemIndex);
                 auto gauntlet = (GJMapPack*)glm->m_savedGauntlets->objectForKey(id->getCString());
-                if (!gauntlet->hasCompletedMapPack())
-                {
-                    //BoomScrollLayer::respositionPagesLooped doesn't support >1-page jumps
-                    log::debug("jumping {} pages forward", i + 1);
-                    for (int k = 0; k < i + 1; k++)
-                        m_scrollLayer->moveToPage(m_scrollLayer->m_page + 1);
-                    return;
-                }
-            }
-        }
-
-        log::debug("no item found");
-        ((CCNode*)sender)->setVisible(false);
+                return gauntlet->hasCompletedMapPack();
+            },
+            jti::scroll::jumpForward, (CCNode*)sender);
     }
 };

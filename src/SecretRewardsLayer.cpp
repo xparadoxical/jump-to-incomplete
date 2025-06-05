@@ -2,17 +2,41 @@
 #include <Geode/modify/SecretRewardsLayer.hpp>
 #include "JumpButton.h"
 #include "utils.h"
+#include "scroll.h"
 
 using namespace geode::prelude;
 
 class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
 {
+    struct Fields
+    {
+        GJRewardType chestType;
+
+        int getChestCount()
+        {
+            switch (chestType)
+            {
+                case GJRewardType::SmallTreasure: return 400;
+                case GJRewardType::LargeTreasure: return 100;
+                case GJRewardType::Key10Treasure: return 60;
+                case GJRewardType::Key25Treasure: return 24;
+                case GJRewardType::Key50Treasure: return 12;
+                case GJRewardType::Key100Treasure: return 8;
+                default:
+                    log::warn("unhandled chest type {}", (int)chestType);
+                    return 0;
+            }
+        }
+    };
+
     $override void createSecondaryLayer(int chestType)
     {
         SecretRewardsLayer::createSecondaryLayer(chestType);
 
         if (m_secondaryScrollLayer->getTotalPages() == 1)
             return;
+
+        m_fields->chestType = (GJRewardType)chestType;
 
         auto jumpButton = JumpButton::create(this, menu_selector(JtiSecretRewardsLayer::onJumpButton), 0.85f);
         auto gap = 5.0f;
@@ -30,43 +54,24 @@ class $modify(JtiSecretRewardsLayer, SecretRewardsLayer)
 
     void onJumpButton(CCObject* sender)
     {
-        //not gonna decipher what SecretRewardsLayer::generateChestItems does
-        auto chestsLayer = m_secondaryScrollLayer->m_extendedLayer;
-        auto pageLayers = CCArrayExt<CCLayer*>(chestsLayer->getChildren());
-
-        auto pageCount = m_secondaryScrollLayer->getTotalPages();
-        auto startingPage = jti::utils::floorMod(m_secondaryScrollLayer->m_page, pageCount);
-        log::debug("pageCount {}", pageCount);
+        auto gsm = GameStatsManager::sharedState();
 
         const auto pageSize = 4 * 3;
-        for (int i = 0; i < pageCount; i++) //check the next pageCount pages
-        {
-            auto pageIndex = (startingPage + 1/*start at next page*/ + i) % pageCount;
-            auto chestButtons = CCArrayExt<CCMenuItemSpriteExtra*>(pageLayers[pageIndex]->getChildByType<CCMenu*>(0)->getChildren());
-            auto pageItemCount = chestButtons.size();
-            log::debug("checking page {} with {} items", pageIndex, pageItemCount);
+        auto pageLayers = CCArrayExt<CCLayer*>(m_secondaryScrollLayer->m_extendedLayer->getChildren());
 
-            for (int itemIndex = 0; itemIndex < pageItemCount; itemIndex++) //check all items on the page
-            {
-                auto id = chestButtons[itemIndex]->getTag();
-                if (!GameStatsManager::sharedState()->isSecretChestUnlocked(id))
-                {
-                    if (m_secondaryScrollLayer->m_looped)
-                    {
-                        //BoomScrollLayer::respositionPagesLooped doesn't support >1-page jumps
-                        log::debug("jumping {} pages forward", i + 1);
-                        for (int k = 0; k < i + 1; k++)
-                            m_secondaryScrollLayer->instantMoveToPage(m_secondaryScrollLayer->m_page + 1);
-                    }
-                    else //25-key chests
-                        m_secondaryScrollLayer->instantMoveToPage(pageIndex);
-
-                    return;
-                }
-            }
-        }
-
-        log::debug("no item found");
-        ((CCNode*)sender)->setVisible(false);
+        jti::scroll::toIncompletePage(m_secondaryScrollLayer, pageSize, m_fields->getChestCount(),
+            [&pageLayers](int pageIndex, int itemIndex) {
+                //not gonna decipher what SecretRewardsLayer::generateChestItems does, so I'm using nodes
+                auto chestButtons = CCArrayExt<CCMenuItemSpriteExtra*>(pageLayers[pageIndex]->getChildByType<CCMenu*>(0)->getChildren());
+                auto chestId = chestButtons[itemIndex % pageSize]->getTag();
+                return GameStatsManager::sharedState()->isSecretChestUnlocked(chestId);
+            },
+            [](BoomScrollLayer* bsl, int pagesForward) {
+                if (bsl->m_looped)
+                    jti::scroll::instantJumpForward(bsl, pagesForward);
+                else //25-key chests; emulate wrap-around
+                    bsl->instantMoveToPage((bsl->m_page + pagesForward) % bsl->getTotalPages()); //0 -> 1 or 0, 1 -> 0 or 1 (overengineered edition)
+            },
+            (CCNode*)sender);
     }
 };

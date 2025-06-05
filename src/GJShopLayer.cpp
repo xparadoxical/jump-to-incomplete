@@ -2,6 +2,7 @@
 #include <Geode/modify/GJShopLayer.hpp>
 #include "JumpButton.h"
 #include "utils.h"
+#include "scroll.h"
 
 using namespace geode::prelude;
 
@@ -43,36 +44,15 @@ class $modify(JtiGJShopLayer, GJShopLayer)
     void onJumpButton(CCObject* sender)
     {
         auto gsm = GameStatsManager::sharedState();
-        auto list = getChildByType<ListButtonBar*>(0);
-
-        auto shopItemIndexes = CCArrayExt<CCInteger*>(m_shopItems->allKeys());
-        auto pageCount = list->m_scrollLayer->getTotalPages();
-        auto startingPage = jti::utils::floorMod(list->m_scrollLayer->m_page, pageCount);
-        auto totalItems = shopItemIndexes.size();
-        log::debug("pageCount {}, items {}", pageCount, totalItems);
 
         const int pageSize = 8;
-        for (int i = 0; i < pageCount; i++) //check the next pageCount pages
-        {
-            auto pageIndex = (startingPage + 1/*start at next page*/ + i) % pageCount;
-            auto pageItemCount = std::min((size_t)pageSize, totalItems - pageIndex * pageSize);
-            log::debug("checking page {} with {} items", pageIndex, pageItemCount);
+        auto shopItemIndexes = CCArrayExt<CCInteger*>(m_shopItems->allKeys());
+        auto totalItems = shopItemIndexes.size();
 
-            for (int j = 0; j < pageItemCount; j++) //check all items on the page
-            {
-                auto itemIndex = pageIndex * pageSize + j;
-                if (!gsm->isStoreItemUnlocked(shopItemIndexes[itemIndex]->getValue()))
-                {
-                    //BoomScrollLayer::respositionPagesLooped doesn't support >1-page jumps
-                    log::debug("jumping {} pages forward", i + 1);
-                    for (int k = 0; k < i + 1; k++)
-                        list->m_scrollLayer->moveToPage(list->m_scrollLayer->m_page + 1);
-                    return;
-                }
-            }
-        }
-
-        log::debug("no item found");
-        ((CCNode*)sender)->setVisible(false);
+        jti::scroll::toIncompletePage(getChildByType<ListButtonBar*>(0)->m_scrollLayer, pageSize, totalItems,
+            [&shopItemIndexes, &gsm](int pageIndex, int itemIndex) {
+                return gsm->isStoreItemUnlocked(shopItemIndexes[itemIndex]->getValue());
+            },
+            jti::scroll::jumpForward, (CCNode*)sender);
     }
 };
