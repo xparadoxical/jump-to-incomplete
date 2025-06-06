@@ -39,7 +39,7 @@ class $modify(ShardsPage)
         for (int i = 0; i < g_shardStats.size(); i++)
             m_fields->shards[i] = gsm->getStat(fmt::to_string((int)g_shardStats[i]).c_str());
 
-        for (int page = m_page + 1; page < m_pages->count(); page++)
+        for (int page = 0; page < m_pages->count(); page++)
         {
             auto groupOffset = page / 2 * 5;
 
