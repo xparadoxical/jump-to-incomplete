@@ -17,5 +17,11 @@
 	"tags": ["offline", "utility", "universal"],
 	"resources": {
 		"sprites": ["resources/jump-button.png"]
+	},
+	"dependencies": {
+		"geode.node-ids": {
+			"version": ">=1.20.1",
+			"importance": "required"
+		}
 	}
 }
