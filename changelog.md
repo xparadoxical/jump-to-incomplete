@@ -1,3 +1,7 @@
+# 1.0.2
+- Fixed first page of shards being skipped
+- Added Node IDs as a dependency
+
 # 1.0.1
 - Fixed a crash occuring when opening a menu, scrolling to the left and then pressing the button
 - The button now gets hidden if there's a single page of chests
