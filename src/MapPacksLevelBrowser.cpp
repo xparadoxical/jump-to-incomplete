@@ -28,8 +28,9 @@ class $modify(JtiLevelBrowserLayer, LevelBrowserLayer)
         m_fields->jumpButton = jumpButton;
 
         auto nextPageMenu = getChildByID("next-page-menu");
-        nextPageMenu->getLayout()->ignoreInvisibleChildren(true); //just in case there'll be more than 2 buttons
-        ((AxisLayout*)nextPageMenu->getLayout())->setAutoScale(false);
+        ((AxisLayout*)nextPageMenu->getLayout())
+            ->ignoreInvisibleChildren(true) //just in case there'll be more than 2 buttons
+            ->setAutoScale(false);
         nextPageMenu->addChild(jumpButton);
         updateVisibility();
 
