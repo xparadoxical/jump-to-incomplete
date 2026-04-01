@@ -1,3 +1,6 @@
+# 1.0.3
+- Added Geode v5 support
+
 # 1.0.2
 - Fixed first page of shards being skipped
 - Added Node IDs as a dependency
